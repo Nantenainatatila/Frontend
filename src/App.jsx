@@ -5,7 +5,7 @@ import Etudiants from "./pages/Etudiants";
 import Listes from "./pages/Listes";
 import Matiere from "./pages/Matiere";
 import Resultat from "./pages/Resultat";
-import ModificationNotes from "./pages/modificationNotes";
+import ModificationNotes from "./pages/ModificationNotes";
 import Login from "./pages/Login";
 import DashboardLayourt from "./layourts/DashboardLayourt";
 import Creer from "./pages/Creer";
