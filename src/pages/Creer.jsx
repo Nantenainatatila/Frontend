@@ -10,7 +10,8 @@ function Creer() {
     const [password, setPassword] = useState("");
     const [confirm_password, setConfirmPassword] = useState("");
     const [role, setRole] = useState("");
-    const [erreur, setErreur] = useState("")
+    const [erreur, setErreur] = useState("");
+    const [loading, setLoading] = useState(false);
    
     const handleSubmit = async(e) => {
         e.preventDefault();
@@ -20,6 +21,7 @@ function Creer() {
             setErreur("Veuiller remplir tous les champs");
             return;
         }
+        setLoading(true);
         try {
             const response = await api.get("/users");
             const existe = response.data.some((user) => user.email.trim().toLowerCase() === email.trim().toLowerCase());
@@ -50,6 +52,8 @@ function Creer() {
         } catch (error) {
             console.error("errer front de creation d'utilisateur", error);
             alert("non enregistre");  
+        } finally {
+            setLoading(false);
         }
     };
     return(
@@ -109,7 +113,7 @@ function Creer() {
                             <p className="message-erreur">{erreur}</p>
                         )}
                         <button className="action" type="submit">
-                            Creer un compte
+                            {loading? "Creation en cours..." : "Creer un compte" }
                         </button>
                         <p>Vous avez deja un compte? 
                             <button className="bouton_connexion" onClick={() => navigate('/login')}>Se connecter
