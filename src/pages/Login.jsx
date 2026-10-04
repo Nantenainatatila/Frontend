@@ -46,55 +46,39 @@ function Login() {
         }
     };
     return(
-        <div className="login">
+        <section id="login_creer">
             <div className="container">
+                <header>
+                    <h5>Login</h5>
+                </header>
                 <form onSubmit={handleSubmit} >
-                    <center>
-                        <div className="form_header">
-                            <h1>Login</h1>
-                        </div>
-                    </center>
-                    <div className="form_container">
-                        <div className="form_group">
-                            
-                            <label htmlFor="">Email</label>
-                            <input 
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </div>
-                        <div className="form_group">
-                            <label htmlFor="">Mot de passe</label>
-                            <input 
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)} 
-                            />
-                        </div>
-
-                        <br />
-                        <div>
-                            <center>
-                                {erreur && (
-                                    <p className="message-erreur">{erreur}</p>
-                                )}
-                                <button className="action" type="submit">
-                                    {loading? "Connection en cours..." : "Se connecter"}</button>
-                                <p>Vous n'avez pas encore de compte?  
-                                    <button className="bouton_connexion" onClick={() => navigate("/creation")}>Creer un compte</button> 
-                                </p>
-                            </center>
-                                
-                        </div>
-                    
-                    </div>
-                    
+                    <input 
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Email (par defaut 'admin@gmail.com')"
+                    />
+                    <input 
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)} 
+                        placeholder="Mot de passe (par defaut '123')"
+                    />
                 </form>
+                <footer>
+                    {erreur && (
+                        <p className="message-erreur">{erreur}</p>
+                    )}
+                    <button className="action" type="submit">
+                        {loading? "Connection en cours..." : "Se connecter"}
+                    </button>
+                    <p>Vous n'avez pas encore de compte? </p> 
+                    <a href="/creation">
+                        Creer un compte
+                    </a>
+                </footer>
             </div>
-           
-            
-        </div>
+        </section>
     );
 }
 export default Login;

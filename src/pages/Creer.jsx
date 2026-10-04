@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import api from "../api/axios";
-
+import "./Login.css";
 
 function Creer() {
     const navigate = useNavigate();
@@ -57,74 +57,58 @@ function Creer() {
         }
     };
     return(
-        <div>
-            <div className="form_creation">
-            <form onSubmit={handleSubmit}>
-                <center><h1>Creation de compte</h1></center>
-                <div className="form_group">
-                    <label htmlFor="">Nom d'utilisateur</label>
+        <section id="login_creer">
+            <div className="container">
+                <header>
+                    <h5>Creation de compte</h5>
+                </header>
+                <form onSubmit={handleSubmit}>
                     <input 
                         type="text"
                         value={name_user}
                         onChange={(e) => setNameUsers(e.target.value)}
-                    />
-                </div>
-                 <div className="form_group">
-                    <label htmlFor="">Email</label>
+                        placeholder="Nom d'utilisateur"
+                    />  
                     <input 
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                    />
-                 </div>
-                 <div className="form_group">
-                    <label htmlFor="">Mot de passe</label>
+                        placeholder="Email utilisateur"
+                    />    
                     <input 
                         type="password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                 </div>
-                 <div className="form_group">
-                    <label htmlFor="">Confirmé le mot de passe</label>
+                        onChange={(e) => setPassword(e.target.value)}     
+                        placeholder="Mot de passe"       
+                    />        
                     <input 
                         type="password"
                         value={confirm_password}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                  
+                        placeholder="Confirmer le mot de passe"
                     />
-                 </div>
-                <div className="form_group">
-                    <label htmlFor="">Role</label>
                     <select  value={role}  onChange={(e) => setRole(e.target.value)} >
-                        <option value="">--Choisir le role</option>
+                        <option value="">--Choisir le role d'utilisateur</option>
                         <option value="admin">Administrateur</option>
                         <option value="coordo">Coordonnateur</option>
                         <option value="enseignant">Enseignant(e)</option>
                     </select> 
-                </div>
-
-                <br />
+                </form>
+                <footer>
+                    {erreur && (
+                        <p className="message-erreur">{erreur}</p>
+                    )}
+                    <button className="action" type="submit">
+                        {loading? "Creation en cours..." : "Creer un compte" }
+                    </button>
+                    <p>Vous avez deja un compte? </p>
+                    <a href="/login">
+                        Se connecter
+                    </a>
+                </footer>
                 
-                
-                <div>
-                    <center>
-                        {erreur && (
-                            <p className="message-erreur">{erreur}</p>
-                        )}
-                        <button className="action" type="submit">
-                            {loading? "Creation en cours..." : "Creer un compte" }
-                        </button>
-                        <p>Vous avez deja un compte? 
-                            <button className="bouton_connexion" onClick={() => navigate('/login')}>Se connecter
-                        </button></p>
-                    </center>
-                     
-                </div>
-               
-            </form>
             </div>
-        </div>
+        </section>
     );
 }
 export default Creer;

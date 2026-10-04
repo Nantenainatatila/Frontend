@@ -1,46 +1,90 @@
-.form_group {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    margin-bottom: 15px;
+body {
+    display: flex;
+    justify-content: center;
     align-items: center;
+    height: 100vh;
 }
-.form_group label{
-    width: 100%;
+section#login_creer {
+    display: flex;
 }
-.form_group input,.form_group select{
-    box-sizing: border-box;
-    padding: 1rem 6rem;
-    border-radius: 10px;
-    font-size: 14px;
-}
-input {
-    text-align: left;
-}
-
-.container{
-    width: 80%;
-    border: solid 3px ;
+section#login_creer .container {
+    max-width: 600px;
+    background: #2d2b42;
     border-radius: 20px;
-    background-color: rgba(27, 38, 62, 0.9);
-    margin: auto;
-    margin-top: 3rem;
-}
-.login {
-   
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
 }
 
-@media (max-width: 750px) {
-    .form_group input,.form_group select{
-        width: 90%;
+section#login_creer .container header {
+    font-size: 2rem;
+    margin: 20px;
+}
+section#login_creer .container header h5 {
+    margin: 20px;
+    margin-bottom: 0px;
+}
+section#login_creer .container input {
+    padding: 1rem;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid white;
+    background-color: transparent;
+    border-radius: 0px;
+    color: white;
+    font-size: 0.9rem;
+}
 
+section#login_creer .container select {
+    padding: 0.7rem;
+    border: none;
+    outline: none;
+    background-color: #4d4a6c;
+    border-radius: 10px;
+    color: white;
+    font-size: 0.9rem;
+}
+
+section#login_creer .container button {
+    border: none;
+    margin: 10px;
+    padding: 0.7rem;
+    font-size: 0.9rem;
+    background-color: #4d4a6c;
+}
+
+section#login_creer .container button:hover {
+    cursor: pointer;
+}
+
+section#login_creer .container button:focus {
+    border: none;
+} 
+
+section#login_creer .container footer a {
+    text-decoration: none;
+    color: white;
+    margin: 20px;
+    font-size: 1rem;
+}
+section#login_creer .container footer {
+    margin-bottom: 20px;
+}
+section#login_creer .container footer a:hover {
+    text-decoration: underline;
+}
+
+@media screen and (max-width: 500px){
+    section#login_creer .container header {
+        margin: 5px;
+        font-size: 1.8rem;
     }
-    .form_group {
-        display: grid;
-        grid-template-columns: 100px 1fr;
-        gap: 5px;
-        margin-bottom: 7px;
-        align-items: center;
-        
-    }
-
 }
+
+
+
+
+
+
+
