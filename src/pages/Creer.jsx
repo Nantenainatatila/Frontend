@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { useState } from "react";
 import api from "../api/axios";
 import "./Login.css";
@@ -62,7 +62,7 @@ function Creer() {
                 <header>
                     <h5>Creation de compte</h5>
                 </header>
-                <form onSubmit={handleSubmit}>
+                <form >
                     <input 
                         type="text"
                         value={name_user}
@@ -98,13 +98,13 @@ function Creer() {
                     {erreur && (
                         <p className="message-erreur">{erreur}</p>
                     )}
-                    <button className="action" type="submit">
+                    <button className="action" type="submit" onClick={handleSubmit}>
                         {loading? "Creation en cours..." : "Creer un compte" }
                     </button>
                     <p>Vous avez deja un compte? </p>
-                    <a href="/login">
+                    <Link to="/login">
                         Se connecter
-                    </a>
+                    </Link>
                 </footer>
                 
             </div>

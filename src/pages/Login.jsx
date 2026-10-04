@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 import "./Login.css";
 
@@ -51,7 +51,7 @@ function Login() {
                 <header>
                     <h5>Login</h5>
                 </header>
-                <form onSubmit={handleSubmit} >
+                <form>
                     <input 
                         type="email"
                         value={email}
@@ -69,13 +69,13 @@ function Login() {
                     {erreur && (
                         <p className="message-erreur">{erreur}</p>
                     )}
-                    <button className="action" type="submit">
+                    <button className="action" type="submit" onClick={handleSubmit}>
                         {loading? "Connection en cours..." : "Se connecter"}
                     </button>
                     <p>Vous n'avez pas encore de compte? </p> 
-                    <a href="/creation">
+                    <Link to="/creation">
                         Creer un compte
-                    </a>
+                    </Link>
                 </footer>
             </div>
         </section>
