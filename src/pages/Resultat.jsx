@@ -20,6 +20,7 @@ function Resultat () {
     const [resultats, setResultats ] = useState([]);
     const [matieres, setMatieres] = useState([]);
     const [recherche, setRecherche ] = useState("");
+    const [detailOuvert, setDetailOuvert] = useState(null);
     
 //recherche
 
@@ -420,7 +421,7 @@ function Resultat () {
             </select>
 
             {idAnnee && idMention && idNiveau && idTypeExamen && (
-                <div>
+                <div className="table-container">
                 <button onClick={exporterListesPDF} className="bouton-enregistrer">Exporter la liste en PDF</button>
                 <br />
                 <input 
@@ -434,13 +435,13 @@ function Resultat () {
                 <h1>Resultat d'examen 
                     
                 </h1>
-                <table>
+                <table className="tableau-carte">
                     <thead>
                         <tr>
                             <th>Rang</th>
                             <th>Nom et prenom</th>
                             {matieres.map((matiere) => (
-                                <th key={matiere.id_matiere}>
+                                <th key={matiere.id_matiere} className="col-detail">
                                     {matiere.nom_matiere}
                                     <br />
                                     <small>
@@ -449,17 +450,22 @@ function Resultat () {
                                 </th>
                             ))}
                             <th>Moyenne</th>
-                            <th>Observation</th>
-                            <th>Actions</th>
+                            <th className="col-detail">Observation</th>
+                            <th className="col-detail">Actions</th>
                             
                         </tr>
                     </thead>
                     <tbody>
                         {resultatFiltres.length > 0 ? (
                             resultatFiltres.map((etudiant) => (
-                                <tr key={etudiant.id_etudiant} style={{height:'6vh'}}>
-                                    <td><center>{etudiant.rang}</center></td>
-                                    <td>{etudiant.nom} {""} {etudiant.prenom}</td>
+                                <tr key={etudiant.id_etudiant} style={{height:'6vh'}} className={detailOuvert === etudiant.id_etudiant ? "ouvert" : ""}>
+                                    <td data-label="Rang"><center>{etudiant.rang}</center></td>
+                                    <td data-label="Nom et prénom" className="cell-principale">
+                                        <span className="nom-principal">{etudiant.nom} {""} {etudiant.prenom}</span>
+                                        <button type="button" className="btn-detail" onClick={() => setDetailOuvert(detailOuvert === etudiant.id_etudiant ? null : etudiant.id_etudiant)}>
+                                            {detailOuvert === etudiant.id_etudiant ? "Masquer détail" : "Afficher détail"}
+                                        </button>
+                                    </td>
 
                                     {matieres.map((matiere) => {
                                         const matiereEtudiant = etudiant.matieres.find(
@@ -467,21 +473,21 @@ function Resultat () {
                                                 m.id_matiere === matiere.id_matiere
                                         );
                                         return (
-                                            <td key={matiere.id_matiere}> <center>{matiereEtudiant?.note !== null && 
+                                            <td key={matiere.id_matiere} data-label={matiere.nom_matiere} className="col-detail"> <center>{matiereEtudiant?.note !== null && 
                                                 matiereEtudiant?.note !== undefined ? `${matiereEtudiant.note}/20`: 
                                                 "Aucune note enregistrée"}</center>
                                             </td>
                                         );
                                     })}
                                    
-                                    <td style={{
+                                    <td data-label="Moyenne" style={{
                                         color: Number(etudiant.moyenne) < 10
                                             ? "red"
                                             : "white" 
                                     }}>
                                         {Number(etudiant.moyenne).toFixed(2)} {"/20"}
                                     </td>
-                                    <td style={{
+                                    <td data-label="Observation" className="col-detail" style={{
                                         color: Number(etudiant.moyenne) < 10
                                             ? "red"
                                             : "white" 
@@ -489,7 +495,7 @@ function Resultat () {
                                         {etudiant.observation}
                                         </center>
                                     </td>
-                                    <td> 
+                                    <td data-label="Actions" className="col-detail cell-actions"> 
                                         <center>
                                         <button className="bouton-resultat" onClick={() => modifierNotes(etudiant)}>
                                             Modifier 

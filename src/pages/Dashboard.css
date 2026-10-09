@@ -1,0 +1,111 @@
+/* ===== Dashboard ===== */
+.dashboard-resultat {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 20px;
+    margin: 0 0 18px;
+}
+.dashboard-resultat h1 { margin: 0; }
+
+.select-dashboard-resultat {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+}
+.select-dashboard-resultat select {
+    width: 170px;
+    margin: 0;
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 13px;
+}
+
+.dashboard,
+.second-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 0 0 16px;
+    align-items: stretch;
+}
+
+/* cartes chiffres */
+.container-nombre,
+.container-nombre2,
+.pourcentage {
+    flex: 1 1 250px;
+    min-width: 0;
+    margin: 0;
+    padding: 18px 20px;
+    background: linear-gradient(160deg, var(--surface-2), var(--surface));
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    transition: transform .2s ease, border-color .2s ease;
+}
+.container-nombre { text-align: center; }
+.container-nombre:hover,
+.container-nombre2:hover,
+.pourcentage:hover {
+    transform: translateY(-3px);
+    border-color: rgba(56, 189, 248, 0.5);
+}
+
+.container-nombre h4,
+.container-nombre2 h4,
+.pourcentage h4 {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin: 0 0 10px;
+}
+.container-nombre strong,
+.pourcentage strong {
+    display: block;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 4px auto;
+}
+.container-nombre h5 { margin: 6px 0 0; color: var(--muted); font-weight: 500; font-size: 13px; }
+
+/* nombre d'etudiant par mention */
+.container-nombre2 h3 { font-size: 14px; font-weight: 500; margin: 0; }
+.card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--border);
+}
+.card:last-child { border-bottom: 0; }
+.card span {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.pourcentage center br { display: none; }
+.pourcentage p { margin: 4px 0; color: var(--muted); }
+.pourcentage h5 {
+    margin: 14px 0 0;
+    font-size: 13px;
+    font-weight: 400;
+    text-align: left;
+    color: var(--text);
+}
+.pourcentage h5 p { margin: 3px 0; color: var(--text); }
+
+@media (max-width: 900px) {
+    .select-dashboard-resultat { width: 100%; }
+    .select-dashboard-resultat select { flex: 1 1 140px; width: auto; }
+    .container-nombre strong,
+    .pourcentage strong { font-size: 36px; }
+}

@@ -38,13 +38,13 @@ function Navbar(){
 
     return(
         <>
-        <button
+        <span
             className="menu-toggle"
             onClick={() => setMenuOuvert(!menuOuvert)}
             aria-label="Ouvrir le menu"
         >
                 {menuOuvert ? "✕" : "☰ "}
-            </button>
+            </span>
         <nav className={`navbar ${menuOuvert ? "ouvert" : ""}`}> <br /> <br /> <br />
             <p>Bonjour {utilisateur?.name_user}</p>
             <h2 className="titre">Gestion école</h2>

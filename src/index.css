@@ -1,2 +1,392 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
+/* =====================================================
+   THEME GLOBAL  (design uniquement)
+   ===================================================== */
+:root {
+    --bg: #0d1322;
+    --bg-soft: #131a2e;
+    --surface: #1a2340;
+    --surface-2: #222d4f;
+    --border: #2f3d63;
+    --text: #e8edf8;
+    --muted: #9aa8c7;
+    --accent: #38bdf8;
+    --accent-strong: #0ea5e9;
+    --accent-soft: rgba(56, 189, 248, 0.14);
+    --danger: #ef4444;
+    --danger-strong: #dc2626;
+    --success: #34d399;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    color-scheme: dark;
+}
 
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    background:
+        radial-gradient(1100px 600px at 85% -10%, rgba(56, 189, 248, 0.10), transparent 60%),
+        radial-gradient(900px 500px at -10% 110%, rgba(99, 102, 241, 0.12), transparent 60%),
+        var(--bg);
+    background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5 {
+    margin: 0 0 12px;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+}
+h1 { font-size: 1.7rem; font-weight: 700; }
+h2 { font-size: 1.3rem; font-weight: 600; }
+h3 { font-size: 1.1rem; font-weight: 600; margin: 12px 0; }
+p  { margin: 0 0 10px; }
+
+a { color: var(--accent); }
+
+::selection { background: rgba(56, 189, 248, 0.35); }
+
+/* barres de defilement discretes */
+* { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 8px; }
+
+/* =====================================================
+   CHAMPS DE FORMULAIRE
+   ===================================================== */
+select, input, button {
+    font-family: inherit;
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    width: 300px;
+    max-width: 100%;
+    margin: 8px;
+    color: var(--text);
+}
+
+select, input {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+}
+select:hover, input:hover {
+    border-color: #41558a;
+}
+select:focus, input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+select:disabled, input:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+input::placeholder {
+    color: var(--muted);
+    opacity: .85;
+}
+select { cursor: pointer; }
+
+/* =====================================================
+   BOUTONS
+   ===================================================== */
+button {
+    cursor: pointer;
+    font-weight: 600;
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, var(--accent-strong), #6366f1);
+    color: #fff;
+    box-shadow: 0 6px 18px rgba(14, 165, 233, 0.22);
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease, opacity .15s ease;
+}
+button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.1);
+    box-shadow: 0 8px 22px rgba(14, 165, 233, 0.32);
+}
+button:active { transform: translateY(0); }
+button:focus-visible,
+a:focus-visible,
+.menu-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+    transform: none;
+    filter: none;
+}
+
+/* =====================================================
+   FORMULAIRES (grille label / champ)
+   ===================================================== */
+form { margin: auto; }
+
+.form_group {
+    display: grid;
+    grid-template-columns: minmax(110px, 170px) minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    max-width: 580px;
+    margin: 12px auto;
+    padding: 0 14px;
+    text-align: left;
+}
+.form_group label {
+    font-weight: 500;
+    color: var(--muted);
+}
+.form_group input,
+.form_group select {
+    width: 100%;
+    margin: 0;
+}
+label span { margin-left: 6px; color: var(--muted); }
+
+form > .container {
+    max-width: 720px;
+    margin: 16px auto;
+    padding: 18px 8px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.bouton-enregistre {
+    margin: 14px 8px 4px;
+    width: auto;
+    min-width: 240px;
+    padding: 12px 22px;
+    font-size: 15px;
+}
+.bouton_form_group {
+    width: auto;
+    min-width: 240px;
+    padding: 12px 22px;
+}
+
+.message-erreur {
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    margin: 8px auto;
+    max-width: 480px;
+    font-size: 13px;
+}
+
+/* =====================================================
+   TABLEAUX
+   ===================================================== */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    font-size: 14px;
+    box-shadow: var(--shadow);
+}
+th, td {
+    padding: 10px 10px;
+    text-align: left;
+    vertical-align: middle;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+}
+th {
+    background: var(--surface-2);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    white-space: nowrap;
+}
+th small { text-transform: none; color: var(--muted); font-weight: 500; letter-spacing: 0; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:nth-child(even) td { background: rgba(255, 255, 255, 0.025); }
+tbody tr { transition: background-color .15s ease; }
+tbody tr:hover td { background: var(--accent-soft); }
+td center { text-align: center; }
+td.cell-actions { white-space: nowrap; }
+td.cell-actions center { display: flex; flex-wrap: nowrap; justify-content: center; }
+
+/* boutons a l'interieur d'un tableau */
+td button {
+    width: auto;
+    margin: 3px;
+    padding: 7px 14px;
+    font-size: 13px;
+    box-shadow: none;
+}
+td .input_note { width: 100%; max-width: 260px; margin: 0; }
+
+/* bouton "Afficher detail" : invisible sur grand ecran */
+.btn-detail { display: none; }
+
+.nom-principal { font-weight: 600; }
+
+/* =====================================================
+   TABLEAUX -> CARTES SUR PETIT ECRAN
+   (les colonnes secondaires passent derriere
+    le bouton "Afficher detail")
+   ===================================================== */
+@media (max-width: 900px) {
+    .tableau-carte,
+    .tableau-carte tbody,
+    .tableau-carte tr,
+    .tableau-carte td {
+        display: block;
+        width: 100%;
+    }
+    .tableau-carte {
+        background: transparent;
+        border: 0;
+        box-shadow: none;
+        border-radius: 0;
+        overflow: visible;
+    }
+    /* en-tetes masques visuellement (les libelles sont repris par data-label) */
+    .tableau-carte thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+    .tableau-carte tr {
+        display: flex;
+        flex-direction: column;
+        height: auto !important;
+        margin: 0 0 12px;
+        padding: 4px 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+    .tableau-carte tbody tr:hover { background: var(--surface); }
+    .tableau-carte td,
+    .tableau-carte tbody tr:nth-child(even) td,
+    .tableau-carte tbody tr:hover td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 10px 0;
+        background: transparent;
+        text-align: right;
+        border-bottom: 0;
+        border-top: 1px dashed var(--border);
+    }
+    .tableau-carte tbody tr td.cell-principale {
+        order: -1;
+        border-top: 0;
+        text-align: left;
+    }
+    .tableau-carte td::before {
+        content: attr(data-label);
+        flex: 0 0 38%;
+        text-align: left;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+    .tableau-carte td center { text-align: right; }
+
+    /* colonnes secondaires : cachees tant que le detail n'est pas ouvert */
+    .tableau-carte .col-detail { display: none !important; }
+    .tableau-carte tr.ouvert .col-detail { display: flex !important; }
+
+    /* cellule principale : nom + bouton Afficher detail */
+    .tableau-carte .cell-principale {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    .tableau-carte .cell-principale::before { display: none; }
+    .tableau-carte .cell-principale .nom-principal {
+        flex: 1 1 auto;
+        font-size: 15px;
+        min-width: 0;
+        overflow-wrap: anywhere;
+        text-align: left;
+    }
+    .tableau-carte .btn-detail {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        flex: 0 0 auto;
+        width: auto;
+        margin: 0;
+        padding: 6px 12px;
+        font-size: 12px;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1px solid rgba(56, 189, 248, 0.45);
+        box-shadow: none;
+    }
+    .tableau-carte .btn-detail::after {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-right: 2px solid currentColor;
+        border-bottom: 2px solid currentColor;
+        transform: rotate(45deg) translateY(-2px);
+        transition: transform .2s ease;
+    }
+    .tableau-carte tr.ouvert .btn-detail::after {
+        transform: rotate(-135deg) translateY(-2px);
+    }
+    .tableau-carte .btn-detail:hover { transform: none; }
+
+    /* boutons d'action : pleine largeur, repartis */
+    .tableau-carte .cell-actions { flex-wrap: wrap; justify-content: flex-start; }
+    .tableau-carte .cell-actions::before { display: none; }
+    .tableau-carte td.cell-actions { white-space: normal; }
+    .tableau-carte .cell-actions center {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+    }
+    .tableau-carte .cell-actions button {
+        flex: 1 1 90px;
+        margin: 0;
+        padding: 9px 10px;
+    }
+    .tableau-carte .cell-actions { gap: 8px; }
+
+    .bouton-enregistrer { width: 100%; margin-left: 0; margin-right: 0; }
+
+    /* champ de note dans la saisie */
+    .tableau-carte td .input_note { width: 55%; max-width: none; }
+}

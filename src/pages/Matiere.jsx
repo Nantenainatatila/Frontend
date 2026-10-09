@@ -8,6 +8,7 @@ function Matiere (){
     const [idMention, setIdMention] = useState("");
     const [modeModification, setModeModification] = useState(false);
     const [erreur, setErreur] = useState("");
+    const [detailOuvert, setDetailOuvert] = useState(null);
 
     useEffect(() => {
         api.get("/mentions")
@@ -294,7 +295,7 @@ function Matiere (){
                             Aucune matiere dans cette mention
                         </p>
                     ): (
-                        <table>
+                        <table className="tableau-carte">
                             <thead>
                                 <tr>
                                     <th>Matiere</th>
@@ -304,10 +305,15 @@ function Matiere (){
                             </thead>
                             <tbody>
                                 {matieresFiltees.map((mat) => (
-                                    <tr key={mat.id_matiere}>
-                                        <td>{mat.nom_matiere}</td>
-                                        <td>{mat.coefficient}</td>
-                                        <td>
+                                    <tr key={mat.id_matiere} className={detailOuvert === mat.id_matiere ? "ouvert" : ""}>
+                                        <td data-label="Matière" className="cell-principale">
+                                            <span className="nom-principal">{mat.nom_matiere}</span>
+                                            <button type="button" className="btn-detail" onClick={() => setDetailOuvert(detailOuvert === mat.id_matiere ? null : mat.id_matiere)}>
+                                                {detailOuvert === mat.id_matiere ? "Masquer détail" : "Afficher détail"}
+                                            </button>
+                                        </td>
+                                        <td data-label="Coefficient" className="col-detail">{mat.coefficient}</td>
+                                        <td data-label="Actions" className="col-detail cell-actions">
                                             <button className="bouton-liste" type="button" onClick={() => modifierMatiere(mat.id_matiere)}>Modifier</button>
                                             <button className="bouton-liste1" onClick={() => supprimerMatiere(mat.id_matiere)}>Supprimer</button>
                                             

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import { useAnnee } from "../context/AnneContext";
+import "./Dashboard.css";
 
 
 function Dashboard() {
@@ -114,7 +115,8 @@ function Dashboard() {
 
 
     return(
-        <div >
+        <section id="dashboard">
+            
             <div className="dashboard-resultat">
                 <div >
                     <h1>Dashboard </h1>
@@ -161,7 +163,6 @@ function Dashboard() {
             </div>
             <div className="dashboard">
                
-                
                     <div className="container-nombre">
                         <h4>Nombre d'étudiant</h4> 
                        
@@ -209,7 +210,7 @@ function Dashboard() {
                    </h5>
                 </div>    
             </div>
-        </div>
+        </section>
         
     );
 }

@@ -9,6 +9,7 @@ function Listes(){
     const [students, setStudents] = useState([]);
     const { idAnnee } = useAnnee();
     const [ recherche, setRecherche ] = useState("") ;
+    const [detailOuvert, setDetailOuvert] = useState(null);
 
    
     //Charger l'etudiant
@@ -88,7 +89,7 @@ function Listes(){
             </div>
             <div className="table-container">
             {idAnnee && (
-            <table border="1">
+            <table border="1" className="tableau-carte">
                 <thead>
                     <tr>
                         <th>Matricule</th>
@@ -105,19 +106,24 @@ function Listes(){
                 <tbody>
                     {etudiantFiltres.length > 0 ? (
                         etudiantFiltres.map((student) => (
-                            <tr key={student.id_etudiant}>
-                                <td><center>{student.matricule}</center></td>
-                                <td>{student.nom} {student.prenom}</td>
+                            <tr key={student.id_etudiant} className={detailOuvert === student.id_etudiant ? "ouvert" : ""}>
+                                <td data-label="Matricule" className="col-detail"><center>{student.matricule}</center></td>
+                                <td data-label="Nom et prénom" className="cell-principale">
+                                    <span className="nom-principal">{student.nom} {student.prenom}</span>
+                                    <button type="button" className="btn-detail" onClick={() => setDetailOuvert(detailOuvert === student.id_etudiant ? null : student.id_etudiant)}>
+                                        {detailOuvert === student.id_etudiant ? "Masquer détail" : "Afficher détail"}
+                                    </button>
+                                </td>
                                 
-                                <td>
+                                <td data-label="Naissance" className="col-detail">
                                     {new
                                         Date(student.date_naissance).toLocaleDateString("fr-FR")
                                     } à  {student.lieu_naissance}
                                 </td>
                                 
-                                <td>{student.nom_mention}</td>
-                                <td><center>{student.niveau}</center></td>
-                                <td>
+                                <td data-label="Mention" className="col-detail">{student.nom_mention}</td>
+                                <td data-label="Niveau" className="col-detail"><center>{student.niveau}</center></td>
+                                <td data-label="Actions" className="col-detail cell-actions">
                                     
                                     
                                     <button className="bouton-resultat" onClick={() => navigate("/etudiants") }>Ajouter</button>         

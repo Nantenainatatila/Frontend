@@ -313,7 +313,7 @@ function Notes(){
                 {students.length > 0  && matieres.length > 0 && (
                     <div className="matieres">
                         <h3>Saise des notes</h3>
-                        <table>
+                        <table className="tableau-carte">
                             <thead>
                                 <tr>
                                     <th>Matieres</th>
@@ -326,9 +326,9 @@ function Notes(){
                             <tbody>
                                 {matieres.map((matiere) => (
                                     <tr key={matiere.id_matiere}>
-                                        <td>{matiere.nom_matiere}</td>
-                                        <td>{matiere.coefficient}</td>
-                                        <td>
+                                        <td data-label="Matière" className="cell-principale"><span className="nom-principal">{matiere.nom_matiere}</span></td>
+                                        <td data-label="Coefficient">{matiere.coefficient}</td>
+                                        <td data-label="Note / 20">
                                             <input 
                                                 className="input_note"
                                                 type="number"
