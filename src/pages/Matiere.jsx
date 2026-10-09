@@ -1,5 +1,6 @@
 
 import api from "../api/axios";
+import Chargement from "../composants/Chargement";
 import { useEffect, useState } from "react";
 
 function Matiere (){
@@ -8,6 +9,20 @@ function Matiere (){
     const [idMention, setIdMention] = useState("");
     const [modeModification, setModeModification] = useState(false);
     const [erreur, setErreur] = useState("");
+    const [detailOuvert, setDetailOuvert] = useState(null);
+    const [prets, setPrets] = useState({});
+    const pret = (cle) => setPrets((p) => (p[cle] ? p : { ...p, [cle]: true }));
+    const [actionEnCours, setActionEnCours] = useState(null);
+    const avecChargement = async (cle, fonction) => {
+        if (actionEnCours) return;
+        setActionEnCours(cle);
+        try {
+            await fonction();
+        } finally {
+            setActionEnCours(null);
+        }
+    };
+
 
     useEffect(() => {
         api.get("/mentions")
@@ -20,6 +35,7 @@ function Matiere (){
         .catch ((error) => {
             console.log(error);
         })
+        .finally(() => pret("mentions"))
     }, []);
 
     //Declaration de matiere
@@ -69,7 +85,8 @@ function Matiere (){
          })
          .catch ((error) => {
              console.error(error);
-         });
+         })
+         .finally(() => pret("matieres"));
      }, [refresh]);
 
      //Modification
@@ -194,6 +211,11 @@ function Matiere (){
     };
 
    
+    const chargement = !(prets.mentions && prets.matieres);
+    if (chargement) {
+        return <Chargement texte="Chargement des matières..." />;
+    }
+
     return(
         <>
 
@@ -202,7 +224,7 @@ function Matiere (){
         {/* Ajout de matiere */}
         <div className="ajout-matiere">
             
-        <form onSubmit={handleSubmit} className="form-matiere">
+        <form onSubmit={(e) => avecChargement("envoi", () => handleSubmit(e))} className="form-matiere">
             
             <center><h2>
                 {modeModification ? "Modification de la matiere" : "Ajouter une matiere"}</h2>
@@ -256,7 +278,7 @@ function Matiere (){
                 {erreur && (
                     <p className="message-erreur">{erreur}</p>
                 )}
-                <button type="submit">{modeModification ? "Enregistrer la modification" : "Enregistrer"}</button>
+                <button type="submit" className={actionEnCours === "envoi" ? "btn-loading" : ""} disabled={Boolean(actionEnCours)}>{modeModification ? "Enregistrer la modification" : "Enregistrer"}</button>
                 {modeModification && (<button className="bouton-resultat1" type="bouton" onClick={annulerModification}>Annuler</button>)}
             </div>
             </center>
@@ -294,7 +316,7 @@ function Matiere (){
                             Aucune matiere dans cette mention
                         </p>
                     ): (
-                        <table>
+                        <table className="tableau-carte">
                             <thead>
                                 <tr>
                                     <th>Matiere</th>
@@ -304,12 +326,17 @@ function Matiere (){
                             </thead>
                             <tbody>
                                 {matieresFiltees.map((mat) => (
-                                    <tr key={mat.id_matiere}>
-                                        <td>{mat.nom_matiere}</td>
-                                        <td>{mat.coefficient}</td>
-                                        <td>
-                                            <button className="bouton-liste" type="button" onClick={() => modifierMatiere(mat.id_matiere)}>Modifier</button>
-                                            <button className="bouton-liste1" onClick={() => supprimerMatiere(mat.id_matiere)}>Supprimer</button>
+                                    <tr key={mat.id_matiere} className={detailOuvert === mat.id_matiere ? "ouvert" : ""}>
+                                        <td data-label="Matière" className="cell-principale">
+                                            <span className="nom-principal">{mat.nom_matiere}</span>
+                                            <button type="button" className="btn-detail" onClick={() => setDetailOuvert(detailOuvert === mat.id_matiere ? null : mat.id_matiere)}>
+                                                {detailOuvert === mat.id_matiere ? "Masquer détail" : "Afficher détail"}
+                                            </button>
+                                        </td>
+                                        <td data-label="Coefficient" className="col-detail">{mat.coefficient}</td>
+                                        <td data-label="Actions" className="col-detail cell-actions">
+                                            <button className={"bouton-liste" + (actionEnCours === `mod-${mat.id_matiere}` ? " btn-loading" : "")} disabled={Boolean(actionEnCours)} type="button" onClick={() => avecChargement(`mod-${mat.id_matiere}`, () => modifierMatiere(mat.id_matiere))}>Modifier</button>
+                                            <button className={"bouton-liste1" + (actionEnCours === `sup-${mat.id_matiere}` ? " btn-loading" : "")} disabled={Boolean(actionEnCours)} onClick={() => avecChargement(`sup-${mat.id_matiere}`, () => supprimerMatiere(mat.id_matiere))}>Supprimer</button>
                                             
                                         </td>
                                     </tr>

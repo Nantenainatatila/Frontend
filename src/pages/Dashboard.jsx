@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import Chargement from "../composants/Chargement";
 import { useAnnee } from "../context/AnneContext";
+import "./Dashboard.css";
 
 
 function Dashboard() {
     const { idAnnee } = useAnnee();
+    const [prets, setPrets] = useState({});
+    const pret = (cle) => setPrets((p) => (p[cle] ? p : { ...p, [cle]: true }));
+
     const [stats, setStat]   = useState("0");
     const [filieres, setFilieres ] = useState([]);
     const [mentions, setMentions] = useState([]);
@@ -39,10 +44,10 @@ function Dashboard() {
 
     useEffect(() => {
         if (!idAnnee || !idMention || !idNiveau || !idTypeExamen) {
-            
+            pret("admission");
             return;
         }
-        chargerStatistique();
+        chargerStatistique().finally(() => pret("admission"));
     }, [idAnnee, idMention, idNiveau, idTypeExamen]);
 
     useEffect(() => {
@@ -67,8 +72,8 @@ function Dashboard() {
             }
         };
 
-        chargerDashboard();
-        ChargerNombreFillieres();
+        chargerDashboard().finally(() => pret("dashboard"));
+        ChargerNombreFillieres().finally(() => pret("filiere"));
     }, [idAnnee]);
 
     // dashboard resultat
@@ -83,7 +88,7 @@ function Dashboard() {
                 console.log("erreur mention", error);
             }
         };
-        chargerMention();
+        chargerMention().finally(() => pret("mentions"));
     }, []);
 //CHARGER NIVEAU
 
@@ -96,7 +101,7 @@ function Dashboard() {
                 console.error("erreur niveaux", error);
             }
         };
-        chargerNiveaux();
+        chargerNiveaux().finally(() => pret("niveaux"));
     }, []);
 //CHARGER TYPE D'EXAMEN
 
@@ -109,12 +114,18 @@ function Dashboard() {
                 console.log("erreur type exame", error);
             }
         };
-        chargerTypesExamen();
+        chargerTypesExamen().finally(() => pret("types"));
     }, []);
 
 
+    const chargement = !(prets.admission && prets.dashboard && prets.filiere && prets.mentions && prets.niveaux && prets.types);
+    if (chargement) {
+        return <Chargement texte="Chargement du dashboard..." />;
+    }
+
     return(
-        <div >
+        <section id="dashboard">
+            
             <div className="dashboard-resultat">
                 <div >
                     <h1>Dashboard </h1>
@@ -161,7 +172,6 @@ function Dashboard() {
             </div>
             <div className="dashboard">
                
-                
                     <div className="container-nombre">
                         <h4>Nombre d'étudiant</h4> 
                        
@@ -209,7 +219,7 @@ function Dashboard() {
                    </h5>
                 </div>    
             </div>
-        </div>
+        </section>
         
     );
 }

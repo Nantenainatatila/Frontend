@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
+import Chargement from "../composants/Chargement";
 
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 function ModificationNotes() {
@@ -7,6 +8,7 @@ function ModificationNotes() {
     const navigate = useNavigate();
     const [matieres, setMatieres] = useState([]);
     const [enregistrer, seetEnregistrer] = useState(false);
+    const [chargement, setChargement] = useState(true);
     const location = useLocation();
     const { idTypeExamen, idAnnee, idMention, idNiveau  } = location.state || {} ;
 
@@ -32,7 +34,9 @@ function ModificationNotes() {
             
         };
         if (idInscription && idTypeExamen) {
-            chargerNotes();
+            chargerNotes().finally(() => setChargement(false));
+        } else {
+            setChargement(false);
         }
     }, [idInscription, idTypeExamen]);
     
@@ -102,6 +106,10 @@ function ModificationNotes() {
     };
     
 
+    if (chargement) {
+        return <Chargement texte="Chargement des notes..." />;
+    }
+
     return(
         <div>
             <center>
@@ -109,6 +117,7 @@ function ModificationNotes() {
                         Modification des notes  
              </h1>
              </center>
+            <div className="note-container conteneur-modification">
             {matieres.map((matiere) => (
                 <div key={matiere.id_matiere} className="form_group">
                    
@@ -132,7 +141,7 @@ function ModificationNotes() {
                 
             ))}
             <center>
-            <button onClick={enregistrerModification} disabled={enregistrer} >{enregistrer ? "Enregistrement..." : "Enregistrer la modification"}</button>
+            <button onClick={enregistrerModification} disabled={enregistrer} className={enregistrer ? "btn-loading" : ""} >{enregistrer ? "Enregistrement..." : "Enregistrer la modification"}</button>
             <button onClick={() => navigate("/resultat", {
                     state: {
                         idAnnee, idMention, idNiveau, idTypeExamen
@@ -142,6 +151,7 @@ function ModificationNotes() {
                 Annuler
             </button>
             </center>
+            </div>
         </div>
     );
 }

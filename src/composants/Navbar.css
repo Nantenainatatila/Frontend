@@ -1,121 +1,168 @@
+/* ===== Barre laterale ===== */
 .navbar {
     position: fixed;
     left: 0;
     top: 0;
+    z-index: 1500;
 
     width: 220px;
     height: 100vh;
     display: flex;
     flex-direction: column;
+    gap: 2px;
 
-    display: flex;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: #1f2937;
+    padding: 20px 16px 130px;
+    overflow-y: auto;
+    background: linear-gradient(180deg, #162036 0%, #101828 100%);
+    border-right: 1px solid var(--border);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
 }
+.navbar br { display: none; }
+
+.navbar p {
+    margin: 6px 4px 0;
+    color: var(--muted);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+.titre {
+    color: #fff;
+    margin: 4px 4px 22px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+.navbar h4 {
+    margin: 0 4px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--muted);
+}
+
+.navbar a {
+    display: block;
+    color: #cbd5ea;
+    text-decoration: none;
+    padding: 10px 14px;
+    margin: 2px 0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: background-color .15s ease, color .15s ease;
+}
+.navbar a:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+}
+.navbar a.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-color: rgba(56, 189, 248, 0.35);
+    font-weight: 600;
+}
+
+.select-nav {
+    width: 100%;
+    margin: 0 0 18px;
+    padding: 9px 12px;
+    border-radius: 10px;
+}
+
+/* Bouton deconnexion */
+.bouton {
+    width: 100%;
+    margin: 18px 0 0;
+    color: #fecaca;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.5);
+    box-shadow: none;
+}
+.navbar .bouton { color: #fecaca !important; }
+.bouton:hover {
+    background: var(--danger);
+    color: #fff !important;
+    box-shadow: none;
+}
+
+/* ===== Contenu ===== */
 .main-content {
-    margin-left: 213px;
-    padding: 25px;
-    height: 100%;
-    top: 0;
-    box-sizing: border-box;
-    background-color: rgb(67, 67, 85);
+    margin-left: 220px;
+    min-height: 100vh;
+    padding: 28px 32px 40px;
+    background: transparent;
 }
 
+/* ===== Logo : en bas de la barre laterale ===== */
+.logo-fixed {
+    position: fixed;
+    bottom: 16px;
+    left: 50px;
+    width: 120px;
+    height: 96px;
+    object-fit: contain;
+    background: #fff;
+    image-rendering: auto;
+    z-index: 1600;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+/* ===== Bouton menu (mobile) ===== */
 .menu-toggle {
     display: none;
     position: fixed;
-    top: 15px;
-    left: 15px;
-    width: 45px;
-    height: 45px;
+    top: 12px;
+    left: 12px;
+    width: 44px;
+    height: 44px;
+    margin: 0;
+    align-items: center;
+    justify-content: center;
 
-    border:  none;
-    border-radius: 6px;
-
-    background-color: #1f2937;
-    color: white;
-
-    font-size: 25px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    color: #fff;
+    font-size: 22px;
+    line-height: 1;
     cursor: pointer;
     z-index: 2000;
+    user-select: none;
+    box-shadow: var(--shadow);
+}
+.menu-toggle:hover { background: var(--surface-2); }
 
-}
-
-.titre {
-    color: white;
-    margin-bottom: 30px;
-}
-.navbar a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 1px;
-    border-radius: 6px;
-    margin: 13px; 
-    font-size: 15px;
-   
-    
-}
-
-.navbar a.active {
-    color: aqua;
-    
-}
-.navbar a:hover {
-    color: rgb(45, 74, 74);
-    
-}
-.select-nav{
-    padding: 7px ;
-    border-radius: 10px;
-    width: 150px;
-    margin: 9px;
-    box-sizing: border-box
-}
-
-body {
-    color: white;
-    background-color: rgb(67, 67, 85);
-}
-.logo-fixed {
-    position: fixed;
-    top: 15px;
-    right: 20px;
-
-    width: 110px;
-    object-fit: contain;
-    z-index: 1000;
-    border-radius: 50%;
-}
 @media (max-width: 750px) {
     .menu-toggle {
-        display: block;
-        top: 15px;
-        position: fixed;
-        z-index: 1001;
-      
-
+        display: flex;
     }
     .navbar {
         transform: translateX(-100%);
         transition: transform 0.3s ease;
+        padding-top: 70px;
+        padding-bottom: 30px;
+        box-shadow: none;
     }
     .navbar.ouvert {
         transform: translateX(0);
+        box-shadow: 8px 0 40px rgba(0, 0, 0, 0.55);
     }
     .main-content {
-        margin-left: 0px;
-        padding: 70px 15px 20px;
+        margin-left: 0;
+        padding: 72px 14px 28px;
     }
-    .card {
-        display: grid;
-        grid-template-columns: 50px 1fr;
-        gap: 0px;
-        margin-bottom: 0px;
-        align-items: center;
+    .logo-fixed {
+        top: 12px;
+        bottom: auto;
+        left: auto;
+        right: 14px;
+        width: 70px;
+        height: 56px;
+        border-radius: 10px;
+        z-index: 1000;
     }
-
-}
-.bouton {
-    width: 150px;
 }

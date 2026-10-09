@@ -3,10 +3,24 @@ import "./Etudiant.css";
 import { useParams,useNavigate } from "react-router-dom";
 import { useAnnee } from "../context/AnneContext";
 import api from "../api/axios";
+import Chargement from "../composants/Chargement";
 
 function Etudiants() {
     //Annee
     const { idAnnee } = useAnnee();
+    const [prets, setPrets] = useState({});
+    const pret = (cle) => setPrets((p) => (p[cle] ? p : { ...p, [cle]: true }));
+    const [actionEnCours, setActionEnCours] = useState(null);
+    const avecChargement = async (cle, fonction) => {
+        if (actionEnCours) return;
+        setActionEnCours(cle);
+        try {
+            await fonction();
+        } finally {
+            setActionEnCours(null);
+        }
+    };
+
     //Mentions
     const [mentions, setMentions] = useState([]);
     useEffect(() => {
@@ -17,6 +31,7 @@ function Etudiants() {
         .catch((error) => {
             console.log(error);
         })
+        .finally(() => pret("mentions"))
     }, []);
 
     //niveaux
@@ -29,6 +44,7 @@ function Etudiants() {
         .catch((error) => {
             console.log(error);
         })
+        .finally(() => pret("niveaux"))
     }, []);
 
 
@@ -57,7 +73,10 @@ function Etudiants() {
     });
 
     useEffect(() => {
-        if (!modeModification) return;
+        if (!modeModification) {
+            pret("donnees");
+            return;
+        }
         const chargerDonnees = async () => {
             try {
                 const responseStudentId = await api.get(
@@ -78,7 +97,7 @@ function Etudiants() {
                 );
             }
         };
-        chargerDonnees();
+        chargerDonnees().finally(() => pret("donnees"));
     }, [id, modeModification]);
 
     const handleStudentChange = (e) => {
@@ -171,8 +190,13 @@ function Etudiants() {
    
     //Interface 
 
+    const chargement = !(prets.mentions && prets.niveaux && prets.donnees);
+    if (chargement) {
+        return <Chargement texte="Chargement du formulaire..." />;
+    }
+
     return(
-       <form action="" onSubmit={handleSubmit}>
+       <form action="" onSubmit={(e) => avecChargement("envoi", () => handleSubmit(e))}>
             <h1>
                 Nouveau étudiant
             </h1>
@@ -307,7 +331,7 @@ function Etudiants() {
             
                     <div>
                         <center>
-                        <button type="submit" className="bouton-enregistre">{modeModification ? " Enregistrer la modification" : "Enregistrer"}</button>
+                        <button type="submit" disabled={Boolean(actionEnCours)} className={"bouton-enregistre" + (actionEnCours === "envoi" ? " btn-loading" : "")}>{modeModification ? " Enregistrer la modification" : "Enregistrer"}</button>
         
                         {modeModification && (
                             <button type="button" className="bouton-resultat1" onClick={() =>  navigate("/listes")}>Annuler</button>

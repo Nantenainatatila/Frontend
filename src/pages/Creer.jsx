@@ -98,7 +98,7 @@ function Creer() {
                     {erreur && (
                         <p className="message-erreur">{erreur}</p>
                     )}
-                    <button className="action" type="submit" onClick={handleSubmit}>
+                    <button className={"action" + (loading ? " btn-loading" : "")} disabled={loading} type="submit" onClick={handleSubmit}>
                         {loading? "Creation en cours..." : "Creer un compte" }
                     </button>
                     <p>Vous avez deja un compte? </p>

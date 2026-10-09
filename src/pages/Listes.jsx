@@ -3,12 +3,26 @@ import "./Listes.css";
 import { useNavigate } from "react-router-dom";
 import { useAnnee } from "../context/AnneContext";
 import api from "../api/axios";
+import Chargement from "../composants/Chargement";
 
 
 function Listes(){
     const [students, setStudents] = useState([]);
     const { idAnnee } = useAnnee();
     const [ recherche, setRecherche ] = useState("") ;
+    const [detailOuvert, setDetailOuvert] = useState(null);
+    const [chargement, setChargement] = useState(true);
+    const [actionEnCours, setActionEnCours] = useState(null);
+    const avecChargement = async (cle, fonction) => {
+        if (actionEnCours) return;
+        setActionEnCours(cle);
+        try {
+            await fonction();
+        } finally {
+            setActionEnCours(null);
+        }
+    };
+
 
    
     //Charger l'etudiant
@@ -27,7 +41,8 @@ function Listes(){
                 console.error("erreur de recuperation", error);
             }
         };
-        chargerStudents();
+        setChargement(true);
+        chargerStudents().finally(() => setChargement(false));
     }, [idAnnee]);
     //fonction suppression
     const supprimerEtudiant = async (id) => {
@@ -87,8 +102,10 @@ function Listes(){
                 <br />
             </div>
             <div className="table-container">
-            {idAnnee && (
-            <table border="1">
+            {chargement ? (
+                <Chargement texte="Chargement des étudiants..." />
+            ) : idAnnee && (
+            <table border="1" className="tableau-carte">
                 <thead>
                     <tr>
                         <th>Matricule</th>
@@ -105,19 +122,24 @@ function Listes(){
                 <tbody>
                     {etudiantFiltres.length > 0 ? (
                         etudiantFiltres.map((student) => (
-                            <tr key={student.id_etudiant}>
-                                <td><center>{student.matricule}</center></td>
-                                <td>{student.nom} {student.prenom}</td>
+                            <tr key={student.id_etudiant} className={detailOuvert === student.id_etudiant ? "ouvert" : ""}>
+                                <td data-label="Matricule" className="col-detail"><center>{student.matricule}</center></td>
+                                <td data-label="Nom et prénom" className="cell-principale">
+                                    <span className="nom-principal">{student.nom} {student.prenom}</span>
+                                    <button type="button" className="btn-detail" onClick={() => setDetailOuvert(detailOuvert === student.id_etudiant ? null : student.id_etudiant)}>
+                                        {detailOuvert === student.id_etudiant ? "Masquer détail" : "Afficher détail"}
+                                    </button>
+                                </td>
                                 
-                                <td>
+                                <td data-label="Naissance" className="col-detail">
                                     {new
                                         Date(student.date_naissance).toLocaleDateString("fr-FR")
                                     } à  {student.lieu_naissance}
                                 </td>
                                 
-                                <td>{student.nom_mention}</td>
-                                <td><center>{student.niveau}</center></td>
-                                <td>
+                                <td data-label="Mention" className="col-detail">{student.nom_mention}</td>
+                                <td data-label="Niveau" className="col-detail"><center>{student.niveau}</center></td>
+                                <td data-label="Actions" className="col-detail cell-actions">
                                     
                                     
                                     <button className="bouton-resultat" onClick={() => navigate("/etudiants") }>Ajouter</button>         
@@ -129,7 +151,7 @@ function Listes(){
                                     >
                                         Modifier
                                     </button>
-                                    <button className="bouton-resultat1" onClick={() => supprimerEtudiant(student.id_etudiant)}>Supprimer</button>
+                                    <button className={"bouton-resultat1" + (actionEnCours === `sup-${student.id_etudiant}` ? " btn-loading" : "")} disabled={Boolean(actionEnCours)} onClick={() => avecChargement(`sup-${student.id_etudiant}`, () => supprimerEtudiant(student.id_etudiant))}>Supprimer</button>
                                 </td>
             
                             </tr>

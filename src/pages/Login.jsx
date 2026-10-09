@@ -56,20 +56,20 @@ function Login() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Email (par defaut 'admin@gmail.com')"
+                        placeholder="Email (par defaut 'devnantenaina@gmail.com')"
                     />
                     <input 
                         type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)} 
-                        placeholder="Mot de passe (par defaut '123')"
+                        placeholder="Mot de passe (par defaut '4515')"
                     />
                 </form>
                 <footer>
                     {erreur && (
                         <p className="message-erreur">{erreur}</p>
                     )}
-                    <button className="action" type="submit" onClick={handleSubmit}>
+                    <button className={"action" + (loading ? " btn-loading" : "")} disabled={loading} type="submit" onClick={handleSubmit}>
                         {loading? "Connection en cours..." : "Se connecter"}
                     </button>
                     <p>Vous n'avez pas encore de compte? </p> 

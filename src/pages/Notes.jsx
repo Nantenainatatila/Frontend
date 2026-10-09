@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAnnee } from "../context/AnneContext";
 import api from "../api/axios";
+import Chargement from "../composants/Chargement";
 
 function Notes(){
     //Données
@@ -21,6 +22,19 @@ function Notes(){
 
     const [notes, setNotes] = useState("");
     const [erreur, setErreur] = useState("");
+    const [prets, setPrets] = useState({});
+    const pret = (cle) => setPrets((p) => (p[cle] ? p : { ...p, [cle]: true }));
+    const [actionEnCours, setActionEnCours] = useState(null);
+    const avecChargement = async (cle, fonction) => {
+        if (actionEnCours) return;
+        setActionEnCours(cle);
+        try {
+            await fonction();
+        } finally {
+            setActionEnCours(null);
+        }
+    };
+
 
     
    //CHARGER LES MENTION
@@ -33,7 +47,7 @@ function Notes(){
             console.error("erreur mention", error);
         }
     };
-    chargerMention();
+    chargerMention().finally(() => pret("mentions"));
    }, []);
 
    //CHARGER NIVEAUX
@@ -46,7 +60,7 @@ function Notes(){
             console.error('erreur niveaux', error);
         }
     };
-    chargerNiveaux();
+    chargerNiveaux().finally(() => pret("niveaux"));
    },[]);
 
    //CHARGER TYPES D'EXAMEN
@@ -62,7 +76,7 @@ function Notes(){
             console.error("erreur type d'examen",error);
         }
     };
-    chargerTypesExamen();
+    chargerTypesExamen().finally(() => pret("types"));
    },[]);
 
 
@@ -199,13 +213,18 @@ function Notes(){
             
         }
    };
+    const chargement = !(prets.mentions && prets.niveaux && prets.types);
+    if (chargement) {
+        return <Chargement texte="Chargement..." />;
+    }
+
     return(
         <div>
             <h1>Saisi des notes</h1>
         <div className="note-container">
             <center><h2>Choisir l'étudiant</h2></center>
             {idAnnee && (
-            <form action="" onSubmit={handleSubmit}>
+            <form action="" onSubmit={(e) => avecChargement("envoi", () => handleSubmit(e))}>
                 
 
                 {/**MENTION */}
@@ -313,7 +332,7 @@ function Notes(){
                 {students.length > 0  && matieres.length > 0 && (
                     <div className="matieres">
                         <h3>Saise des notes</h3>
-                        <table>
+                        <table className="tableau-carte">
                             <thead>
                                 <tr>
                                     <th>Matieres</th>
@@ -326,9 +345,9 @@ function Notes(){
                             <tbody>
                                 {matieres.map((matiere) => (
                                     <tr key={matiere.id_matiere}>
-                                        <td>{matiere.nom_matiere}</td>
-                                        <td>{matiere.coefficient}</td>
-                                        <td>
+                                        <td data-label="Matière" className="cell-principale"><span className="nom-principal">{matiere.nom_matiere}</span></td>
+                                        <td data-label="Coefficient">{matiere.coefficient}</td>
+                                        <td data-label="Note / 20">
                                             <input 
                                                 className="input_note"
                                                 type="number"
@@ -351,7 +370,7 @@ function Notes(){
                             
                         </table>
                         <center>
-                            <button className="bouton_form_group" type="submit">Enregistrer les notes</button>
+                            <button className={"bouton_form_group" + (actionEnCours === "envoi" ? " btn-loading" : "")} disabled={Boolean(actionEnCours)} type="submit">Enregistrer les notes</button>
                         </center>
                     </div>
                 )}

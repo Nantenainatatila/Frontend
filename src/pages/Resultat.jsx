@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
+import Chargement from "../composants/Chargement";
 import { useAnnee } from "../context/AnneContext";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
@@ -20,6 +21,21 @@ function Resultat () {
     const [resultats, setResultats ] = useState([]);
     const [matieres, setMatieres] = useState([]);
     const [recherche, setRecherche ] = useState("");
+    const [detailOuvert, setDetailOuvert] = useState(null);
+    const [chargementTable, setChargementTable] = useState(false);
+    const [prets, setPrets] = useState({});
+    const pret = (cle) => setPrets((p) => (p[cle] ? p : { ...p, [cle]: true }));
+    const [actionEnCours, setActionEnCours] = useState(null);
+    const avecChargement = async (cle, fonction) => {
+        if (actionEnCours) return;
+        setActionEnCours(cle);
+        try {
+            await fonction();
+        } finally {
+            setActionEnCours(null);
+        }
+    };
+
     
 //recherche
 
@@ -48,7 +64,7 @@ function Resultat () {
                 console.log("erreur mention", error);
             }
         };
-        chargerMention();
+        chargerMention().finally(() => pret("mentions"));
     }, []);
 //CHARGER NIVEAU
 
@@ -61,7 +77,7 @@ function Resultat () {
                 console.error("erreur niveaux", error);
             }
         };
-        chargerNiveaux();
+        chargerNiveaux().finally(() => pret("niveaux"));
     }, []);
 //CHARGER TYPE D'EXAMEN
 
@@ -74,7 +90,7 @@ function Resultat () {
                 console.log("erreur type exame", error);
             }
         };
-        chargerTypesExamen();
+        chargerTypesExamen().finally(() => pret("types"));
     }, []);
 
 
@@ -83,6 +99,7 @@ function Resultat () {
     useEffect(() => {
         if (!idAnnee || !idMention || !idNiveau || !idTypeExamen) {
             setResultats([]);
+            pret("resultat");
             return;
 
         }
@@ -98,7 +115,11 @@ function Resultat () {
                 setResultats([]);
             }
         };
-        chargerResultat();
+        setChargementTable(true);
+        chargerResultat().finally(() => {
+            pret("resultat");
+            setChargementTable(false);
+        });
     }, [idAnnee,idMention, idNiveau, idTypeExamen]);
 
 //Modification
@@ -359,6 +380,11 @@ function Resultat () {
             console.error("erreur d'exportation pdf", error);
         }
     };
+    const chargement = !(prets.mentions && prets.niveaux && prets.types && prets.resultat);
+    if (chargement) {
+        return <Chargement texte="Chargement des résultats..." />;
+    }
+
     return (
         <>
             <h1>Resulat</h1>
@@ -420,8 +446,8 @@ function Resultat () {
             </select>
 
             {idAnnee && idMention && idNiveau && idTypeExamen && (
-                <div>
-                <button onClick={exporterListesPDF} className="bouton-enregistrer">Exporter la liste en PDF</button>
+                <div className="table-container">
+                <button onClick={() => avecChargement("pdf-liste", exporterListesPDF)} disabled={Boolean(actionEnCours)} className={"bouton-enregistrer" + (actionEnCours === "pdf-liste" ? " btn-loading" : "")}>Exporter la liste en PDF</button>
                 <br />
                 <input 
                     type="text"
@@ -434,13 +460,16 @@ function Resultat () {
                 <h1>Resultat d'examen 
                     
                 </h1>
-                <table>
+                {chargementTable ? (
+                    <Chargement texte="Chargement des résultats..." />
+                ) : (
+                <table className="tableau-carte">
                     <thead>
                         <tr>
                             <th>Rang</th>
                             <th>Nom et prenom</th>
                             {matieres.map((matiere) => (
-                                <th key={matiere.id_matiere}>
+                                <th key={matiere.id_matiere} className="col-detail">
                                     {matiere.nom_matiere}
                                     <br />
                                     <small>
@@ -449,17 +478,22 @@ function Resultat () {
                                 </th>
                             ))}
                             <th>Moyenne</th>
-                            <th>Observation</th>
-                            <th>Actions</th>
+                            <th className="col-detail">Observation</th>
+                            <th className="col-detail">Actions</th>
                             
                         </tr>
                     </thead>
                     <tbody>
                         {resultatFiltres.length > 0 ? (
                             resultatFiltres.map((etudiant) => (
-                                <tr key={etudiant.id_etudiant} style={{height:'6vh'}}>
-                                    <td><center>{etudiant.rang}</center></td>
-                                    <td>{etudiant.nom} {""} {etudiant.prenom}</td>
+                                <tr key={etudiant.id_etudiant} style={{height:'6vh'}} className={detailOuvert === etudiant.id_etudiant ? "ouvert" : ""}>
+                                    <td data-label="Rang"><center>{etudiant.rang}</center></td>
+                                    <td data-label="Nom et prénom" className="cell-principale">
+                                        <span className="nom-principal">{etudiant.nom} {""} {etudiant.prenom}</span>
+                                        <button type="button" className="btn-detail" onClick={() => setDetailOuvert(detailOuvert === etudiant.id_etudiant ? null : etudiant.id_etudiant)}>
+                                            {detailOuvert === etudiant.id_etudiant ? "Masquer détail" : "Afficher détail"}
+                                        </button>
+                                    </td>
 
                                     {matieres.map((matiere) => {
                                         const matiereEtudiant = etudiant.matieres.find(
@@ -467,21 +501,21 @@ function Resultat () {
                                                 m.id_matiere === matiere.id_matiere
                                         );
                                         return (
-                                            <td key={matiere.id_matiere}> <center>{matiereEtudiant?.note !== null && 
+                                            <td key={matiere.id_matiere} data-label={matiere.nom_matiere} className="col-detail"> <center>{matiereEtudiant?.note !== null && 
                                                 matiereEtudiant?.note !== undefined ? `${matiereEtudiant.note}/20`: 
                                                 "Aucune note enregistrée"}</center>
                                             </td>
                                         );
                                     })}
                                    
-                                    <td style={{
+                                    <td data-label="Moyenne" style={{
                                         color: Number(etudiant.moyenne) < 10
                                             ? "red"
                                             : "white" 
                                     }}>
                                         {Number(etudiant.moyenne).toFixed(2)} {"/20"}
                                     </td>
-                                    <td style={{
+                                    <td data-label="Observation" className="col-detail" style={{
                                         color: Number(etudiant.moyenne) < 10
                                             ? "red"
                                             : "white" 
@@ -489,20 +523,15 @@ function Resultat () {
                                         {etudiant.observation}
                                         </center>
                                     </td>
-                                    <td> 
+                                    <td data-label="Actions" className="col-detail cell-actions"> 
                                         <center>
                                         <button className="bouton-resultat" onClick={() => modifierNotes(etudiant)}>
                                             Modifier 
                                         </button>
-                                        <button className="bouton-resultat" onClick={() => 
-                                            exporterPDF(etudiant.id_inscription, idTypeExamen
-
-                                            )}>
+                                        <button className={"bouton-resultat" + (actionEnCours === `rel-${etudiant.id_inscription}` ? " btn-loading" : "")} disabled={Boolean(actionEnCours)} onClick={() => avecChargement(`rel-${etudiant.id_inscription}`, () => exporterPDF(etudiant.id_inscription, idTypeExamen))}>
                                             Relevé
                                         </button>
-                                        <button className="bouton-resultat1" onClick={() => supprimerNotes(
-                                            etudiant.id_inscription, idTypeExamen
-                                        )}>Supprimer</button>
+                                        <button className={"bouton-resultat1" + (actionEnCours === `sup-${etudiant.id_inscription}` ? " btn-loading" : "")} disabled={Boolean(actionEnCours)} onClick={() => avecChargement(`sup-${etudiant.id_inscription}`, () => supprimerNotes(etudiant.id_inscription, idTypeExamen))}>Supprimer</button>
                                         </center>
                                     </td>
 
@@ -520,6 +549,7 @@ function Resultat () {
                         )}
                     </tbody>
                 </table>
+                )}
                 
                 </div> 
             )}
